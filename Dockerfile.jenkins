@@ -1,0 +1,53 @@
+FROM jenkins/jenkins:lts
+
+USER root
+
+RUN apt-get update && apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+RUN echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+RUN apt-get update && apt-get install -y docker-ce-cli
+
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    chmod +x kubectl && \
+    mv kubectl /usr/local/bin/
+
+USER jenkins
+
+# basic plugins
+RUN jenkins-plugin-cli --plugins \
+    git \
+    github \
+    github-branch-source \
+    workflow-aggregator \
+    pipeline-github-lib \
+    pipeline-stage-view \
+    credentials-binding \
+    docker-workflow \
+    kubernetes \
+    kubernetes-cli \
+    timestamper \
+    ws-cleanup \
+    antisamy-markup-formatter \
+    build-timeout \
+    cloudbees-folder \
+    configuration-as-code \
+    credentials \
+    email-ext \
+    mailer \
+    matrix-auth \
+    pam-auth \
+    ldap \
+    ssh-slaves \
+    job-dsl
+
+ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false

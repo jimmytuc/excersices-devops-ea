@@ -1,0 +1,52 @@
+jenkins:
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: admin
+          password: 1a2a3a4a5a
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  remotingSecurity:
+    enabled: true
+  nodes:
+    - permanent:
+        name: "built-in node"
+        remoteFS: "/home/jenkins"
+        launcher:
+          jnlp:
+            workDirSettings:
+              disabled: true
+              failIfWorkDirIsMissing: false
+              internalDir: "remoting"
+  slaveAgentPort: 50000
+  agentProtocols:
+    - "JNLP4-connect"
+    - "Ping"
+
+unclassified:
+  location:
+    url: http://localhost:8080/
+
+# test
+jobs:
+  - script: >
+      pipelineJob('simple-pipeline') {
+        definition {
+          cps {
+            script('''
+              pipeline {
+                agent any
+                stages {
+                  stage('Hello') {
+                    steps {
+                      echo 'Hello World'
+                    }
+                  }
+                }
+              }
+            ''')
+          }
+        }
+      }

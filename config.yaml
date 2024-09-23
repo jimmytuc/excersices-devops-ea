@@ -1,0 +1,24 @@
+# Environment Variables
+environment: development  # Can be 'development', 'staging', or 'production'
+
+# Application Settings
+app_name: hackathon-starter
+app_port: 3000
+
+# Database Settings
+db_host: mongodb
+db_port: 27017
+db_name: hackathon
+
+# Docker Settings
+docker_registry: 127.0.0.1:5555
+
+# Kubernetes Settings
+k8s_namespace: hackathon-starter
+
+# Jenkins Settings
+jenkins_url: http://localhost:8080
+
+# Resource Limits
+memory_limit: 4Gi
+cpu_limit: 2
