@@ -6,23 +6,19 @@ ENV NODE_ENV development
 
 COPY ./code/package*.json ./
 
+COPY ./code ./
+
 RUN if [ "$NODE_ENV" = "production" ]; then \
     npm install --omit=dev; \
     else \
     npm install; \
     fi
 
-COPY ./code ./
-
-RUN npm run build
+RUN npm run scss
 
 FROM --platform=linux/amd64 nginx:alpine
 
-COPY --from=builder /usr/src/app/dist /usr/share/nginx/html/dist
-COPY --from=builder /usr/src/app/views /usr/share/nginx/html/views
-COPY --from=builder /usr/src/app/public /usr/share/nginx/html/public
-
-COPY --from=builder /usr/src/app/build /usr/share/nginx/html
+COPY --from=builder /usr/src/app/public /usr/share/nginx/html
 
 EXPOSE 80
 
